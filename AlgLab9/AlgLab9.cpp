@@ -53,6 +53,36 @@ vector<int> bfsDistances(const vector<vector<int>>& graph, int start) {
     return distances;
 }
 
+int countDominatingVertices(const vector<vector<int>>& graph) {
+    int size = graph.size();
+    int count = 0;
+
+    for (int i = 0; i < size; ++i) {
+        bool isDominating = true;
+        for (int j = 0; j < size; ++j) {
+            if (i != j && graph[i][j] == 0) {
+                isDominating = false;
+                break;
+            }
+        }
+        if (isDominating) {
+            ++count;
+        }
+    }
+
+    return count;
+}
+
+vector<int> findIsolatedVertices(const vector<int>& distances) {
+    vector<int> isolatedVertices;
+    for (int i = 0; i < distances.size(); ++i) {
+        if (distances[i] == -1) {
+            isolatedVertices.push_back(i);
+        }
+    }
+    return isolatedVertices;
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
     srand(time(NULL));
@@ -67,13 +97,34 @@ int main() {
     printMatrix(adjacencyMatrix);
 
     int startVertex = 0;
-    cout << "Введите стортовую вершину:\n";
-    cin >> startVertex;
-    vector<int> distances = bfsDistances(adjacencyMatrix, startVertex);
 
+    while (true)
+    {
+        cout << "Введите стартовую вершину:\n";
+        cin >> startVertex;
+        if (startVertex >= 0 && startVertex < graphSize)
+        {
+            break;
+        }
+        else
+        {
+            cout << "Значение не валидно\n";
+        }
+    }
+
+    vector<int> distances = bfsDistances(adjacencyMatrix, startVertex);
     cout << "\nРасстояния от вершины " << startVertex << ":" << endl;
     for (int i = 0; i < distances.size(); ++i) {
         cout << "Вершина " << i << ": " << distances[i] << endl;
+    }
+
+    int dominatingVerticesCount = countDominatingVertices(adjacencyMatrix);
+    cout << "\nКоличество доминирующих вершин: " << dominatingVerticesCount << endl;
+
+    vector<int> isolatedVertices = findIsolatedVertices(distances);
+    cout << "\nИзолированные вершины:" << endl;
+    for (int vertex : isolatedVertices) {
+        cout << "Вершина " << vertex << endl;
     }
 
     return 0;
